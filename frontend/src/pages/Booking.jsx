@@ -14,6 +14,17 @@ import serviceImage from "../assets/images/booking/booking-service.jpg";
 import calendarImage from "../assets/images/booking/booking-calendar.jpg";
 import confirmImage from "../assets/images/booking/booking-confirm.jpg";
 
+function getTodayLima() {
+  const formatter = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/Lima",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+
+  return formatter.format(new Date());
+}
+
 function Booking() {
   const [currentStep, setCurrentStep] = useState(1);
 
@@ -30,38 +41,35 @@ function Booking() {
     motivo_trabajo: "",
     detalle_motivo: "",
 
-    fecha: "",
+    fecha: getTodayLima(),
     bloque_hora: "",
   });
 
   const stepContent = {
     1: {
       image: personalImage,
-      title: "Un buen mantenimiento te lleva más lejos",
     },
 
     2: {
       image: motoImage,
-      title: "Cada moto tiene su propia historia",
     },
 
     3: {
       image: serviceImage,
-      title: "El cuidado de hoy, más kilómetros mañana",
     },
 
     4: {
       image: calendarImage,
-      title: "Tu tiempo también importa",
     },
 
     5: {
       image: confirmImage,
-      title: "Listo para rodar juntos",
     },
   };
 
   const currentVisual = stepContent[currentStep];
+
+  const isConfirmation = currentStep === 5;
 
   return (
     <div
@@ -109,30 +117,45 @@ function Booking() {
           className="
           grid
           grid-cols-1
-          md:grid-cols-[40%_60%]
-          min-h-[620px]
+          md:grid-cols-[380px_1fr]
           "
         >
           {/* IMAGEN LATERAL */}
 
           <div
-            className="
+            className={`
             relative
-            h-48
-            md:h-full
-            "
+
+            ${
+              isConfirmation
+                ? "h-65 md:h-[720px]"
+                : currentStep === 4
+                  ? "h-65 md:h-[820px]"
+                  : "h-65 md:h-[720px]"
+            }
+
+            `}
           >
             <img
               src={currentVisual.image}
-              className="
+              className={`
+
               absolute
               inset-0
               w-full
               h-full
               object-cover
-              object-center
-              "
-              alt="MotoExpress"
+
+
+              ${
+                isConfirmation
+                  ? "object-[center_20%] md:object-center"
+                  : "object-[center_40%] md:object-center"
+              }
+
+
+              `}
+              alt=""
             />
 
             <div
@@ -150,6 +173,7 @@ function Booking() {
               h-full
               flex
               items-end
+              pb-6
               p-6
               md:p-10
               "
@@ -163,9 +187,7 @@ function Booking() {
                 leading-tight
                 max-w-sm
                 "
-              >
-                {currentVisual.title}
-              </h2>
+              ></h2>
             </div>
           </div>
 

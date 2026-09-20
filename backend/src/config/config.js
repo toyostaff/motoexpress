@@ -26,20 +26,29 @@ const config = {
   booking: {
     maxAdvanceDays: 30,
 
-    enabledWeekDays: [1, 2, 3, 4, 5],
+    enabledWeekDays: [1, 2, 3, 4, 5, 6],
 
-    morningBlocks: [
-      "08:00 - 09:00",
-      "09:00 - 10:00",
-      "10:00 - 11:00",
-      "11:00 - 12:00",
-      "12:00 - 13:00",
-    ],
+morningBlocks: [
+  "08:00 - 09:00",
+  "09:00 - 10:00",
+  "10:00 - 11:00",
+  "11:00 - 12:00",
+  "12:00 - 13:00",
+],
 
-    afternoonBlocks: ["14:00 - 15:00", "15:00 - 16:00", "16:00 - 17:00"],
+afternoonBlocks: [
+  "14:00 - 15:00",
+  "15:00 - 16:00",
+  "16:00 - 17:00",
+  "17:00 - 18:00",
+  "18:00 - 19:00",
+  "19:00 - 20:00",
+  "20:00 - 21:00",
+  "21:00 - 22:00",
+],
   },
 
-  motorcycleBrands: ["HONDA", "SUZUKI", "TVS", "BAJAJ", "OTROS"],
+  motorcycleBrands: ["HONDA", "SUZUKI", "TVS", "BAJAJ", "YAMAHA", "OTROS"],
 
 serviceTypes: [
   "Cambio de aceite",

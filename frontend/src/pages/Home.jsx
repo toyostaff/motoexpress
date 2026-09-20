@@ -4,6 +4,8 @@ import Services from "../components/Services";
 import Benefits from "../components/Benefits";
 import CTA from "../components/CTA";
 import Footer from "../components/Footer";
+import DeliverySection from "../components/DeliverySection";
+import HowItWorks from "../components/HowItWorks";
 
 function Home(){
 
@@ -15,9 +17,11 @@ return(
 
 <Hero />
 
-<Services />
-
 <Benefits />
+
+<DeliverySection />
+
+<HowItWorks />
 
 <CTA />
 

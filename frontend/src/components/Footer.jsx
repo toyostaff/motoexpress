@@ -1,140 +1,209 @@
-function Footer(){
+import logoX from "../assets/images/logo_X.png";
 
-return(
+function Footer() {
+  return (
+    <footer
+      className="
+      bg-[#0B1115]
+      text-gray-300
+      py-10
+      px-6
+      md:px-20
+      "
+    >
 
-<footer
+      <div
+        className="
+        grid
+        grid-cols-1
+        md:grid-cols-[1.5fr_1fr_1fr_1fr]
+        gap-8
+        items-center
+        "
+      >
 
-className="
-bg-[#0B1115]
-text-gray-300
-py-10
-px-6
-md:px-20
-"
-
->
-
-
-<div
-
-className="
-grid
-grid-cols-1
-md:grid-cols-3
-gap-8
-"
-
->
-
-
+{/* Logo */}
 <div>
 
-<h3
-className="
-text-2xl
-font-bold
-text-white
-"
->
+  <div
+    className="
+    flex
+    flex-col
+    items-start
+    "
+  >
 
-Moto<span className="text-orange-500">
-Express
-</span>
-
-</h3>
-
-
-<p className="mt-3">
-
-Servicio profesional para tu motocicleta.
-
-</p>
-
-</div>
+    <img
+      src={logoX}
+      alt="MotoExpress"
+      className="
+      w-28
+      h-28
+      object-contain
+      "
+    />
 
 
-
-<div>
-
-<h4 className="text-white font-bold">
-
-Contacto
-
-</h4>
-
-
-<p className="mt-3">
-
-📞 987 654 321
-
-</p>
+    <h3
+      className="
+      text-3xl
+      font-bold
+      text-white
+      mt-2
+      "
+    >
+      Moto
+      <span className="text-orange-500">
+        Express
+      </span>
+    </h3>
 
 
-<p>
-
-📍 Lima Norte
-
-</p>
-
-
-</div>
-
-
-
-<div>
-
-<h4 className="text-white font-bold">
-
-Horario
-
-</h4>
+    <p
+      className="
+      text-xs
+      text-gray-400
+      tracking-widest
+      "
+    >
+      LIMA NORTE
+    </p>
 
 
-<p className="mt-3">
-
-Lunes - Viernes
-
-</p>
-
-
-<p>
-
-08:00 - 17:00
-
-</p>
-
-
-</div>
-
+  </div>
 
 </div>
 
 
 
-<div
+        {/* Contacto */}
+        <div>
 
-className="
-border-t
-border-gray-700
-mt-8
-pt-6
-text-center
-text-sm
-"
-
->
-
-© 2026 MotoExpress. Todos los derechos reservados.
-
-</div>
+          <h4
+            className="
+            text-white
+            font-bold
+            text-lg
+            "
+          >
+            Contacto
+          </h4>
 
 
-</footer>
+          <p className="mt-3">
+            📞 123456789 - XAVIER
+          </p>
 
-)
 
+          <p>
+            📍 Lima Norte
+          </p>
+
+
+        </div>
+
+
+
+        {/* Horario */}
+        <div>
+
+          <h4
+            className="
+            text-white
+            font-bold
+            text-lg
+            "
+          >
+            Horario
+          </h4>
+
+
+          <p className="mt-3">
+            Lunes - Sábado
+          </p>
+
+
+          <p>
+            08:00 - 20:00
+          </p>
+
+
+        </div>
+
+
+
+        {/* Redes */}
+        <div>
+
+          <h4
+            className="
+            text-white
+            font-bold
+            text-lg
+            "
+          >
+            Síguenos
+          </h4>
+
+
+          <div
+            className="
+            flex
+            gap-4
+            mt-4
+            "
+          >
+
+            <a
+              href="#"
+              className="
+              hover:text-orange-500
+              transition
+              "
+            >
+              Instagram
+            </a>
+
+
+            <a
+              href="#"
+              className="
+              hover:text-orange-500
+              transition
+              "
+            >
+              TikTok
+            </a>
+
+
+          </div>
+
+
+        </div>
+
+
+      </div>
+
+
+
+      <div
+        className="
+        border-t
+        border-gray-700
+        mt-8
+        pt-6
+        text-center
+        text-sm
+        "
+      >
+
+        Todos los derechos reservados - 2026
+
+      </div>
+
+
+    </footer>
+  );
 }
 
-
 export default Footer;
-
