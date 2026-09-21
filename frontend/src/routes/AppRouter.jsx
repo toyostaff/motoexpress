@@ -1,21 +1,60 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import Home from "../pages/Home";
 import Booking from "../pages/Booking";
 import Login from "../pages/Login";
+
 import Dashboard from "../pages/Dashboard";
-import { Navigate } from "react-router-dom";
+
+import Citas from "../components/admin/Citas";
+import Calendario from "../components/admin/Calendario";
+import Clientes from "../components/admin/Clientes";
+import Servicios from "../components/admin/Servicios";
+import Reportes from "../components/admin/Reportes";
+import Configuracion from "../components/admin/Configuracion";
+import DetalleCita from "../components/admin/DetalleCita";
+
 import ProtectedRoute from "../components/auth/ProtectedRoute";
 
+
 function AppRouter() {
+
+
   return (
+
     <BrowserRouter>
+
+
       <Routes>
-        <Route path="/" element={<Home />} />
 
-        <Route path="/reservar" element={<Booking />} />
 
-        <Route path="/admin/login" element={<Login />} />
+        {/* Público */}
+
+        <Route
+          path="/"
+          element={<Home />}
+        />
+
+
+        <Route
+          path="/reservar"
+          element={<Booking />}
+        />
+
+
+
+        {/* Login */}
+
+        <Route
+          path="/admin/login"
+          element={<Login />}
+        />
+
+
+
+
+        {/* Panel administrador */}
+
 
         <Route
           path="/admin/dashboard"
@@ -26,10 +65,107 @@ function AppRouter() {
           }
         />
 
-        <Route path="/admin" element={<Navigate to="/admin/login" replace />} />
+
+
+        <Route
+          path="/admin/citas"
+          element={
+            <ProtectedRoute>
+              <Citas />
+            </ProtectedRoute>
+          }
+        />
+
+
+
+        <Route
+          path="/admin/citas/:id"
+          element={
+            <ProtectedRoute>
+              <DetalleCita />
+            </ProtectedRoute>
+          }
+        />
+
+
+
+        <Route
+          path="/admin/calendario"
+          element={
+            <ProtectedRoute>
+              <Calendario />
+            </ProtectedRoute>
+          }
+        />
+
+
+
+        <Route
+          path="/admin/clientes"
+          element={
+            <ProtectedRoute>
+              <Clientes />
+            </ProtectedRoute>
+          }
+        />
+
+
+
+        <Route
+          path="/admin/servicios"
+          element={
+            <ProtectedRoute>
+              <Servicios />
+            </ProtectedRoute>
+          }
+        />
+
+
+
+        <Route
+          path="/admin/reportes"
+          element={
+            <ProtectedRoute>
+              <Reportes />
+            </ProtectedRoute>
+          }
+        />
+
+
+
+        <Route
+          path="/admin/configuracion"
+          element={
+            <ProtectedRoute>
+              <Configuracion />
+            </ProtectedRoute>
+          }
+        />
+
+
+
+        {/* Redirección base admin */}
+
+        <Route
+          path="/admin"
+          element={
+            <Navigate
+              to="/admin/login"
+              replace
+            />
+          }
+        />
+
+
+
       </Routes>
+
+
     </BrowserRouter>
+
   );
+
 }
+
 
 export default AppRouter;
