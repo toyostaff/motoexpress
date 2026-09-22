@@ -1,14 +1,30 @@
 // backend/src/routes/appointmentRoutes.js
 
-const express = require('express');
-const appointmentController = require('../controllers/appointmentController');
+const express = require("express");
 
 const router = express.Router();
 
-router.get('/ocupados', appointmentController.getOccupiedBlocks);
-router.post('/agendar', appointmentController.createAppointment);
+const appointmentController = require("../controllers/appointmentController");
 
+const authMiddleware = require("../middleware/authMiddleware");
+
+// Obtener bloques ocupados
+router.get("/ocupados", appointmentController.getOccupiedBlocks);
+
+// Crear cita
+router.post("/agendar", appointmentController.createAppointment);
+
+// Listar citas administrador
+router.get("/", authMiddleware, appointmentController.listarCitas);
+
+// Obtener cita por ID
+router.get("/:id", authMiddleware, appointmentController.obtenerCita);
+
+// Actualizar estado de cita
+router.put(
+  "/:id/estado",
+  authMiddleware,
+  appointmentController.actualizarEstado,
+);
 
 module.exports = router;
-
-

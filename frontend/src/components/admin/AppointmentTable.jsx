@@ -1,375 +1,168 @@
 import { Link } from "react-router-dom";
 
+function AppointmentTable({ citas = [], cargando }) {
+  const estadoColor = (estado) => {
+    switch (estado) {
+      case "Pendiente":
+        return "bg-orange-100 text-orange-700";
 
-function AppointmentTable() {
+      case "Confirmado":
+        return "bg-blue-100 text-blue-700";
 
+      case "Atendido":
+        return "bg-green-100 text-green-700";
 
-    const appointments = [
+      case "Cancelado":
+        return "bg-red-100 text-red-700";
 
-        {
-            id: 1,
-            cliente: "Carlos Pérez",
-            moto: "Honda CB190",
-            servicio: "Cambio de aceite",
-            fecha: "21/09/2026",
-            hora: "10:00",
-            estado: "Pendiente",
-        },
+      case "No realizado":
+        return "bg-gray-100 text-gray-700";
 
-        {
-            id: 2,
-            cliente: "María López",
-            moto: "Yamaha MT-03",
-            servicio: "Revisión de frenos",
-            fecha: "21/09/2026",
-            hora: "14:00",
-            estado: "Confirmada",
-        },
+      default:
+        return "bg-gray-100 text-gray-700";
+    }
+  };
 
-        {
-            id: 3,
-            cliente: "José Ramírez",
-            moto: "Bajaj Pulsar",
-            servicio: "Revisión batería",
-            fecha: "21/09/2026",
-            hora: "16:00",
-            estado: "En proceso",
-        },
-
-        {
-            id: 4,
-            cliente: "Ana Torres",
-            moto: "Suzuki GSX",
-            servicio: "Mantenimiento general",
-            fecha: "20/09/2026",
-            hora: "11:00",
-            estado: "Finalizada",
-        },
-
-    ];
-
-
-
-
-
-    const estadoColor = (estado) => {
-
-
-        switch (estado) {
-
-
-            case "Pendiente":
-
-                return "bg-orange-100 text-orange-700";
-
-
-            case "Confirmada":
-
-                return "bg-blue-100 text-blue-700";
-
-
-            case "En proceso":
-
-                return "bg-yellow-100 text-yellow-700";
-
-
-            case "Finalizada":
-
-                return "bg-green-100 text-green-700";
-
-
-            default:
-
-                return "bg-gray-100 text-gray-700";
-
-
-        }
-
-    };
-
-
-
-
-
-    return (
-
-
-        <div
-
-            className="
-                bg-white
-                rounded-xl
-                shadow-sm
-                border
-                border-gray-100
-                mt-8
-                overflow-hidden
-            "
-
+  return (
+    <div
+      className="
+        bg-white
+        rounded-xl
+        shadow-sm
+        border
+        border-gray-100
+        mt-8
+        overflow-hidden
+      "
+    >
+      <div
+        className="
+          p-5
+          border-b
+          border-gray-100
+        "
+      >
+        <h3
+          className="
+            text-xl
+            font-bold
+            text-gray-800
+          "
         >
+          Últimas citas
+        </h3>
+      </div>
 
+      <div className="overflow-x-auto">
+        <table className="w-full text-left">
+          <thead
+            className="
+              bg-gray-50
+              text-gray-600
+              text-sm
+            "
+          >
+            <tr>
+              <th className="px-5 py-4">Cliente</th>
 
+              <th className="px-5 py-4">Moto</th>
 
-            <div
+              <th className="px-5 py-4">Servicio</th>
 
-                className="
-                    p-5
-                    border-b
-                    border-gray-100
-                "
+              <th className="px-5 py-4">Fecha</th>
 
-            >
+              <th className="px-5 py-4">Hora</th>
 
+              <th className="px-5 py-4">Estado</th>
 
-                <h3
+              <th className="px-5 py-4">Acción</th>
+            </tr>
+          </thead>
 
-                    className="
-                        text-xl
-                        font-bold
-                        text-gray-800
+          <tbody>
+            {cargando ? (
+              <tr>
+                <td
+                  colSpan="7"
+                  className="
+                      text-center
+                      py-6
                     "
-
                 >
-
-                    Últimas citas
-
-                </h3>
-
-
-            </div>
-
-
-
-
-
-            <div className="overflow-x-auto">
-
-
-
-                <table
-
-                    className="
-                        w-full
-                        text-left
+                  Cargando citas...
+                </td>
+              </tr>
+            ) : citas.length === 0 ? (
+              <tr>
+                <td
+                  colSpan="7"
+                  className="
+                      text-center
+                      py-6
+                      text-gray-500
                     "
-
                 >
+                  No existen citas registradas
+                </td>
+              </tr>
+            ) : (
+              citas.slice(0, 5).map((item) => (
+                <tr
+                  key={item.id}
+                  className="
+                      border-t
+                      hover:bg-gray-50
+                    "
+                >
+                  <td className="px-5 py-4">
+                    <div className="font-semibold">{item.nombre_cliente}</div>
 
+                    <div className="text-sm text-gray-500">{item.telefono}</div>
+                  </td>
 
+                  <td className="px-5 py-4">{item.marca_moto}</td>
 
-                    <thead
+                  <td className="px-5 py-4">{item.motivo_trabajo}</td>
 
-                        className="
-                            bg-gray-50
-                            text-gray-600
-                            text-sm
-                        "
+                  <td className="px-5 py-4">{item.fecha}</td>
 
+                  <td className="px-5 py-4">{item.bloque_hora}</td>
+
+                  <td className="px-5 py-4">
+                    <span
+                      className={`
+                          px-3
+                          py-1
+                          rounded-full
+                          text-xs
+                          font-semibold
+                          ${estadoColor(item.estado)}
+                        `}
                     >
-
-
-                        <tr>
-
-
-                            <th className="px-5 py-4">
-                                Cliente
-                            </th>
-
-
-                            <th className="px-5 py-4">
-                                Moto
-                            </th>
-
-
-                            <th className="px-5 py-4">
-                                Servicio
-                            </th>
-
-
-                            <th className="px-5 py-4">
-                                Fecha
-                            </th>
-
-
-                            <th className="px-5 py-4">
-                                Hora
-                            </th>
-
-
-                            <th className="px-5 py-4">
-                                Estado
-                            </th>
-
-
-                            <th className="px-5 py-4">
-                                Acción
-                            </th>
-
-
-
-                        </tr>
-
-
-
-                    </thead>
-
-
-
-
-
-                    <tbody>
-
-
-                        {appointments.map((item) => (
-
-
-
-                            <tr
-
-                                key={item.id}
-
-                                className="
-                                    border-t
-                                    hover:bg-gray-50
-                                "
-
-                            >
-
-
-
-                                <td className="px-5 py-4">
-
-                                    {item.cliente}
-
-                                </td>
-
-
-
-
-                                <td className="px-5 py-4">
-
-                                    {item.moto}
-
-                                </td>
-
-
-
-
-                                <td className="px-5 py-4">
-
-                                    {item.servicio}
-
-                                </td>
-
-
-
-
-                                <td className="px-5 py-4">
-
-                                    {item.fecha}
-
-                                </td>
-
-
-
-
-                                <td className="px-5 py-4">
-
-                                    {item.hora}
-
-                                </td>
-
-
-
-
-                                <td className="px-5 py-4">
-
-
-
-                                    <span
-
-                                        className={`
-                                            px-3
-                                            py-1
-                                            rounded-full
-                                            text-xs
-                                            font-semibold
-                                            ${estadoColor(item.estado)}
-                                        `}
-
-                                    >
-
-                                        {item.estado}
-
-
-                                    </span>
-
-
-
-                                </td>
-
-
-
-
-
-                                <td className="px-5 py-4">
-
-
-                                    <Link
-
-                                        to={`/admin/citas/${item.id}`}
-
-                                        className="
-                                            text-[#FF6A00]
-                                            font-semibold
-                                            hover:underline
-                                        "
-
-                                    >
-
-                                        Ver detalle
-
-
-                                    </Link>
-
-
-                                </td>
-
-
-
-
-
-                            </tr>
-
-
-
-                        ))}
-
-
-
-                    </tbody>
-
-
-
-
-                </table>
-
-
-
-
-            </div>
-
-
-
-
-        </div>
-
-
-
-    );
-
+                      {item.estado}
+                    </span>
+                  </td>
+
+                  <td className="px-5 py-4">
+                    <Link
+                      to={`/admin/citas/${item.id}`}
+                      className="
+                          text-[#FF6A00]
+                          font-semibold
+                          hover:underline
+                        "
+                    >
+                      Ver detalle
+                    </Link>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
 }
-
-
 
 export default AppointmentTable;

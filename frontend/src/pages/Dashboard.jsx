@@ -1,4 +1,4 @@
-import {useEffect,useState} from "react";
+import { useEffect, useState } from "react";
 
 import api from "../api/axios";
 
@@ -10,178 +10,114 @@ import AppointmentTable from "../components/admin/AppointmentTable";
 
 import CalendarWidget from "../components/admin/CalendarWidget";
 
+function Dashboard() {
+  const [citas, setCitas] = useState([]);
 
+  const [stats, setStats] = useState({
+    pendientes: 0,
 
-function Dashboard(){
+    confirmadas: 0,
 
+    atendidas: 0,
 
-const [stats,setStats]=useState({
+    canceladas: 0,
+  });
 
-pendientes:0,
+  const [cargando, setCargando] = useState(true);
 
-confirmadas:0,
+  useEffect(() => {
+    cargarDashboard();
+  }, []);
 
-atendidas:0,
+  async function cargarDashboard() {
+    try {
+      const response = await api.get("/citas");
 
-canceladas:0
+      const data = response.data.data || [];
 
-});
+      setCitas(data);
 
+      setStats({
+        pendientes: data.filter((item) => item.estado === "Pendiente").length,
 
+        confirmadas: data.filter((item) => item.estado === "Confirmado").length,
 
+        atendidas: data.filter((item) => item.estado === "Atendido").length,
 
-useEffect(()=>{
+        canceladas: data.filter((item) => item.estado === "Cancelado").length,
+      });
+    } catch (error) {
+      console.error("Error cargando dashboard:", error);
+    } finally {
+      setCargando(false);
+    }
+  }
 
+  return (
+    <AdminLayout>
+      <h2
+        className="
+          text-3xl
+          font-bold
+          text-gray-800
+        "
+      >
+        Resumen general
+      </h2>
 
-cargarDashboard();
+      <p
+        className="
+          text-gray-500
+          mt-2
+          mb-6
+        "
+      >
+        Estado actual del servicio MotoExpress
+      </p>
 
+      <div
+        className="
+          grid
+          grid-cols-1
+          md:grid-cols-2
+          xl:grid-cols-4
+          gap-5
+        "
+      >
+        <StatCard
+          title="Pendientes"
+          value={stats.pendientes}
+          icon="📅"
+          color="bg-orange-100"
+        />
 
-},[]);
+        <StatCard
+          title="Confirmadas"
+          value={stats.confirmadas}
+          icon="✅"
+          color="bg-blue-100"
+        />
 
+        <StatCard
+          title="Atendidas"
+          value={stats.atendidas}
+          icon="🔧"
+          color="bg-green-100"
+        />
 
+        <StatCard
+          title="Canceladas"
+          value={stats.canceladas}
+          icon="❌"
+          color="bg-red-100"
+        />
+      </div>
 
+      <AppointmentTable citas={citas} cargando={cargando} />
 
-async function cargarDashboard(){
-
-
-try{
-
-
-const response =
-await api.get("/admin/dashboard");
-
-
-
-setStats(response.data.data);
-
-
-
+      <CalendarWidget />
+    </AdminLayout>
+  );
 }
-
-catch(error){
-
-console.log(error);
-
-}
-
-
-}
-
-
-
-
-
-return(
-
-
-<AdminLayout>
-
-
-<h2 className="
-text-3xl
-font-bold
-text-gray-800
-">
-
-Resumen general
-
-</h2>
-
-
-
-<p className="
-text-gray-500
-mt-2
-mb-6
-">
-
-Estado actual del servicio MotoExpress
-
-</p>
-
-
-
-<div className="
-grid
-grid-cols-1
-md:grid-cols-2
-xl:grid-cols-4
-gap-5
-">
-
-
-<StatCard
-
-title="Pendientes"
-
-value={stats.pendientes}
-
-icon="📅"
-
-color="bg-orange-100"
-
-/>
-
-
-<StatCard
-
-title="Confirmadas"
-
-value={stats.confirmadas}
-
-icon="✅"
-
-color="bg-blue-100"
-
-/>
-
-
-
-<StatCard
-
-title="Atendidas"
-
-value={stats.atendidas}
-
-icon="🔧"
-
-color="bg-green-100"
-
-/>
-
-
-
-<StatCard
-
-title="Canceladas"
-
-value={stats.canceladas}
-
-icon="❌"
-
-color="bg-red-100"
-
-/>
-
-
-
-</div>
-
-
-
-<AppointmentTable/>
-
-
-<CalendarWidget/>
-
-
-</AdminLayout>
-
-
-);
-
-
-}
-
 
 export default Dashboard;
