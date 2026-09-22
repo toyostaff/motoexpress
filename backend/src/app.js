@@ -10,13 +10,16 @@ const appointmentRoutes = require("./routes/appointmentRoutes");
 
 const app = express();
 
+
+
 app.use(
   cors({
-    origin: ["http://localhost:5173"],
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    origin: [
+      "http://localhost:5173",
+      "https://silver-spork-7vrw4pp6grqqfxrr4-5173.app.github.dev"
+    ],
     credentials: true,
-  }),
+  })
 );
 
 app.use(express.json());

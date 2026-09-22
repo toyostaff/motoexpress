@@ -15,6 +15,10 @@ function Login() {
   const [error, setError] = useState("");
   const [cargando, setCargando] = useState(false);
 
+  const volverInicio = () => {
+    navigate("/");
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -33,9 +37,9 @@ function Login() {
         password,
       });
 
-      // BLOQUE 4.1: Almacenamiento seguro usando token JWT
       if (response.data.ok) {
         localStorage.setItem("token", response.data.token);
+
         localStorage.setItem(
           "administrador",
           JSON.stringify(response.data.administrador)
@@ -55,47 +59,122 @@ function Login() {
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center bg-cover bg-center relative"
+      className="
+        min-h-screen
+        flex
+        items-center
+        justify-center
+        bg-cover
+        bg-center
+        relative
+      "
       style={{
         backgroundImage: `url(${fondo})`,
       }}
     >
+
+      {/* BOTÓN ATRÁS */}
+      <button
+        onClick={volverInicio}
+        className="
+          absolute
+          top-9
+          left-9
+          z-20
+          bg-white/5
+          hover:bg-white/5
+          text-white
+          px-5
+          py-3
+          rounded-lg
+          backdrop-blur
+          transition
+          font-semibold
+        "
+      >
+        ← ATRÁS
+      </button>
+
+
       {/* Overlay oscuro */}
       <div className="absolute inset-0 bg-black/70"></div>
 
+
       {/* Login Card */}
       <div className="relative z-10 w-full max-w-md px-6">
-        <div className="bg-[#111820] rounded-2xl shadow-2xl p-8 border border-white/10">
+
+        <div
+          className="
+            bg-[#111820]
+            rounded-2xl
+            shadow-2xl
+            p-8
+            border
+            border-white/10
+          "
+        >
 
           {/* Logo */}
           <div className="flex justify-center mb-6">
+
             <img
               src={logo}
               alt="MotoExpress"
-              className="w-48 object-contain"
+              className="
+                w-48
+                object-contain
+              "
             />
+
           </div>
 
-          <h1 className="text-white text-2xl font-bold text-center mb-2">
+
+          <h1
+            className="
+              text-white
+              text-2xl
+              font-bold
+              text-center
+              mb-2
+            "
+          >
             Panel Administrador
           </h1>
 
-          <p className="text-gray-400 text-center mb-8">
+
+          <p
+            className="
+              text-gray-400
+              text-center
+              mb-8
+            "
+          >
             Ingresa tus credenciales para continuar
           </p>
 
+
           <form onSubmit={handleSubmit}>
+
 
             {/* Usuario */}
             <div className="mb-5">
-              <label className="text-gray-300 text-sm block mb-2">
+
+              <label
+                className="
+                  text-gray-300
+                  text-sm
+                  block
+                  mb-2
+                "
+              >
                 Usuario
               </label>
+
 
               <input
                 type="text"
                 value={usuario}
-                onChange={(e) =>
+                onChange={(e)=>
                   setUsuario(e.target.value)
                 }
                 className="
@@ -112,24 +191,36 @@ function Login() {
                 "
                 placeholder="Ingrese usuario"
               />
+
             </div>
+
+
 
             {/* Password */}
             <div className="mb-5">
-              <label className="text-gray-300 text-sm block mb-2">
+
+              <label
+                className="
+                  text-gray-300
+                  text-sm
+                  block
+                  mb-2
+                "
+              >
                 Contraseña
               </label>
+
 
               <div className="relative">
 
                 <input
                   type={
                     mostrarPassword
-                      ? "text"
-                      : "password"
+                    ? "text"
+                    : "password"
                   }
                   value={password}
-                  onChange={(e) =>
+                  onChange={(e)=>
                     setPassword(e.target.value)
                   }
                   className="
@@ -148,6 +239,7 @@ function Login() {
                   placeholder="Ingrese contraseña"
                 />
 
+
                 <button
                   type="button"
                   onClick={() =>
@@ -163,14 +255,23 @@ function Login() {
                     hover:text-white
                   "
                 >
-                  {mostrarPassword ? "🙈" : "👁"}
+                  {
+                    mostrarPassword
+                    ? "🙈"
+                    : "👁"
+                  }
+
                 </button>
 
               </div>
+
             </div>
+
+
 
             {/* Error */}
             {error && (
+
               <div
                 className="
                   bg-red-500/20
@@ -185,7 +286,10 @@ function Login() {
               >
                 {error}
               </div>
+
             )}
+
+
 
             {/* Botón */}
             <button
@@ -203,15 +307,23 @@ function Login() {
                 disabled:opacity-50
               "
             >
-              {cargando
+
+              {
+                cargando
                 ? "Ingresando..."
-                : "Iniciar sesión"}
+                : "Iniciar sesión"
+              }
+
             </button>
+
 
           </form>
 
+
         </div>
+
       </div>
+
 
     </div>
   );
