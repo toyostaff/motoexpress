@@ -1,24 +1,74 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 import AdminLayout from "../../layouts/AdminLayout";
 import api from "../../api/axios";
 
 function Citas() {
   const navigate = useNavigate();
+
   const [citas, setCitas] = useState([]);
   const [cargando, setCargando] = useState(true);
 
+  const [busqueda, setBusqueda] = useState("");
+  const [estado, setEstado] = useState("");
+
+  const [fecha, setFecha] = useState("");
+  const [usarFecha, setUsarFecha] = useState(false);
+
+  const obtenerFechaActual = () => {
+    const hoy = new Date();
+
+    const año = hoy.getFullYear();
+    const mes = String(hoy.getMonth() + 1).padStart(2, "0");
+    const dia = String(hoy.getDate()).padStart(2, "0");
+
+    return `${año}-${mes}-${dia}`;
+  };
+
   useEffect(() => {
+    const fechaHoy = obtenerFechaActual();
+
+    setFecha(fechaHoy);
+
     cargarCitas();
   }, []);
 
+  useEffect(() => {
+    const tiempo = setTimeout(() => {
+      cargarCitas();
+    }, 400);
+
+    return () => clearTimeout(tiempo);
+  }, [busqueda, estado, fecha, usarFecha]);
+
   const cargarCitas = async () => {
     try {
-      const response = await api.get("/citas");
+      setCargando(true);
+
+      const params = new URLSearchParams();
+
+      if (busqueda.trim()) {
+        params.append("nombre", busqueda.trim());
+      }
+
+      if (estado) {
+        params.append("estado", estado);
+      }
+
+      if (usarFecha && fecha) {
+        params.append("inicio", fecha);
+
+        params.append("fin", fecha);
+      }
+
+      const response = await api.get(`/citas?${params.toString()}`);
 
       setCitas(response.data.data || []);
     } catch (error) {
       console.error("Error cargando citas:", error);
+
+      setCitas([]);
     } finally {
       setCargando(false);
     }
@@ -38,6 +88,9 @@ function Citas() {
       case "Cancelado":
         return "bg-red-100 text-red-700";
 
+      case "No realizado":
+        return "bg-gray-100 text-gray-700";
+
       default:
         return "bg-gray-100 text-gray-700";
     }
@@ -46,34 +99,12 @@ function Citas() {
   return (
     <AdminLayout>
       <div>
-        <div
-          className="
-          flex
-          justify-between
-          items-center
-          mb-8
-        "
-        >
-          <div>
-            <h1
-              className="
-              text-3xl
-              font-bold
-              text-gray-800
-            "
-            >
-              Gestión de Citas
-            </h1>
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-800">Gestión de Citas</h1>
 
-            <p
-              className="
-              text-gray-500
-              mt-2
-            "
-            >
-              Administra las reservas del servicio técnico
-            </p>
-          </div>
+          <p className="text-gray-500 mt-2">
+            Administra las reservas del servicio técnico
+          </p>
         </div>
 
         <div
@@ -89,48 +120,60 @@ function Citas() {
           grid-cols-1
           md:grid-cols-3
           gap-4
-        "
+          "
         >
           <input
             type="text"
+            value={busqueda}
+            onChange={(e) => setBusqueda(e.target.value)}
             placeholder="Buscar cliente..."
             className="
-              border
-              rounded-lg
-              px-4
-              py-3
-              outline-none
-              focus:border-[#FF6A00]
+            border
+            rounded-lg
+            px-4
+            py-3
+            outline-none
+            focus:border-[#FF6A00]
             "
           />
 
           <select
+            value={estado}
+            onChange={(e) => setEstado(e.target.value)}
             className="
-              border
-              rounded-lg
-              px-4
-              py-3
-              outline-none
+            border
+            rounded-lg
+            px-4
+            py-3
+            outline-none
             "
           >
-            <option>Todos los estados</option>
+            <option value="">Todos los estados</option>
 
-            <option>Pendiente</option>
+            <option value="Pendiente">Pendiente</option>
 
-            <option>Confirmado</option>
+            <option value="Confirmado">Confirmado</option>
 
-            <option>Atendido</option>
+            <option value="Atendido">Atendido</option>
 
-            <option>Cancelado</option>
+            <option value="Cancelado">Cancelado</option>
+
+            <option value="No realizado">No realizado</option>
           </select>
 
           <input
             type="date"
+            value={fecha}
+            onChange={(e) => {
+              setFecha(e.target.value);
+
+              setUsarFecha(true);
+            }}
             className="
-              border
-              rounded-lg
-              px-4
-              py-3
+            border
+            rounded-lg
+            px-4
+            py-3
             "
           />
         </div>
@@ -143,14 +186,14 @@ function Citas() {
           border
           border-gray-100
           overflow-hidden
-        "
+          "
         >
           <table className="w-full">
             <thead
               className="
               bg-gray-50
               text-gray-600
-            "
+              "
             >
               <tr>
                 <th className="p-4 text-left">Cliente</th>
@@ -187,9 +230,9 @@ function Citas() {
                   <tr
                     key={item.id}
                     className="
-                        border-t
-                        hover:bg-gray-50
-                      "
+                    border-t
+                    hover:bg-gray-50
+                    "
                   >
                     <td className="p-4">
                       <div className="font-semibold">{item.nombre_cliente}</div>
@@ -210,13 +253,13 @@ function Citas() {
                     <td className="p-4">
                       <span
                         className={`
-                            px-3
-                            py-1
-                            rounded-full
-                            text-xs
-                            font-semibold
-                            ${estadoStyle(item.estado)}
-                          `}
+                        px-3
+                        py-1
+                        rounded-full
+                        text-xs
+                        font-semibold
+                        ${estadoStyle(item.estado)}
+                        `}
                       >
                         {item.estado}
                       </span>
@@ -226,10 +269,10 @@ function Citas() {
                       <button
                         onClick={() => navigate(`/admin/citas/${item.id}`)}
                         className="
-text-[#FF6A00]
-font-semibold
-hover:underline
-"
+                        text-[#FF6A00]
+                        font-semibold
+                        hover:underline
+                        "
                       >
                         Ver
                       </button>

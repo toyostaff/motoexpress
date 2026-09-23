@@ -86,6 +86,37 @@ function listarCitas(req, res) {
   }
 }
 
+function agendaTaller(req, res) {
+  try {
+    const { fecha } = req.query;
+
+    if (!fecha) {
+      return res.status(400).json({
+        ok: false,
+        message: "Debe enviar una fecha",
+      });
+    }
+
+    const citas = appointmentService
+      .getAppointments()
+      .filter((item) => item.fecha === fecha);
+
+    return res.status(200).json({
+      ok: true,
+
+      fecha,
+
+      data: citas,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      ok: false,
+
+      message: error.message,
+    });
+  }
+}
+
 function obtenerCita(req, res) {
   try {
     const cita = appointmentService.getAppointmentById(req.params.id);
@@ -131,6 +162,7 @@ function actualizarEstado(req, res) {
 }
 
 module.exports = {
+
   getOccupiedBlocks,
 
   createAppointment,
@@ -140,4 +172,7 @@ module.exports = {
   obtenerCita,
 
   actualizarEstado,
+
+  agendaTaller,
+
 };

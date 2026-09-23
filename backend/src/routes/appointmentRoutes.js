@@ -17,8 +17,13 @@ router.post("/agendar", appointmentController.createAppointment);
 // Listar citas administrador
 router.get("/", authMiddleware, appointmentController.listarCitas);
 
+router.get("/calendario", appointmentController.agendaTaller);
+
+
 // Obtener cita por ID
 router.get("/:id", authMiddleware, appointmentController.obtenerCita);
+
+
 
 // Actualizar estado de cita
 router.put(
@@ -26,5 +31,6 @@ router.put(
   authMiddleware,
   appointmentController.actualizarEstado,
 );
+
 
 module.exports = router;

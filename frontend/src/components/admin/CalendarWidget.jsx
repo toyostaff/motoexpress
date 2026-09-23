@@ -1,15 +1,5 @@
 function CalendarWidget() {
-
-
-  const days = [
-    "Lunes",
-    "Martes",
-    "Miércoles",
-    "Jueves",
-    "Viernes",
-    "Sábado",
-  ];
-
+  const days = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
 
   const hours = [
     "08:00",
@@ -24,8 +14,6 @@ function CalendarWidget() {
     "18:00",
   ];
 
-
-
   const status = [
     "Disponible",
     "Reservado",
@@ -35,12 +23,8 @@ function CalendarWidget() {
     "Disponible",
   ];
 
-
-
-  const getStatusStyle = (estado)=>{
-
-    switch(estado){
-
+  const getStatusStyle = (estado) => {
+    switch (estado) {
       case "Disponible":
         return "bg-green-100 text-green-700";
 
@@ -52,15 +36,10 @@ function CalendarWidget() {
 
       default:
         return "bg-gray-100 text-gray-700";
-
     }
-
   };
 
-
-
   return (
-
     <div
       className="
         bg-white
@@ -72,8 +51,6 @@ function CalendarWidget() {
         p-5
       "
     >
-
-
       <div
         className="
           flex
@@ -82,9 +59,7 @@ function CalendarWidget() {
           mb-5
         "
       >
-
         <div>
-
           <h3
             className="
               text-xl
@@ -95,7 +70,6 @@ function CalendarWidget() {
             Calendario de disponibilidad
           </h3>
 
-
           <p
             className="
               text-gray-500
@@ -104,9 +78,7 @@ function CalendarWidget() {
           >
             Horarios de atención del taller
           </p>
-
         </div>
-
 
         <button
           className="
@@ -121,32 +93,22 @@ function CalendarWidget() {
         >
           Gestionar horarios
         </button>
-
-
       </div>
 
-
-
       <div className="overflow-x-auto">
-
-
         <table
           className="
             w-full
             border-collapse
           "
         >
-
-
           <thead>
-
             <tr
               className="
                 bg-gray-50
                 text-gray-600
               "
             >
-
               <th
                 className="
                   p-3
@@ -156,40 +118,22 @@ function CalendarWidget() {
                 Hora
               </th>
 
-
-              {days.map((day,index)=>(
-
-                <th
-                  key={index}
-                  className="p-3"
-                >
+              {days.map((day, index) => (
+                <th key={index} className="p-3">
                   {day}
                 </th>
-
               ))}
-
-
             </tr>
-
-
           </thead>
 
-
-
           <tbody>
-
-
-            {hours.map((hour,index)=>(
-
-
+            {hours.map((hour, index) => (
               <tr
                 key={index}
                 className="
                   border-t
                 "
               >
-
-
                 <td
                   className="
                     p-3
@@ -200,16 +144,8 @@ function CalendarWidget() {
                   {hour}
                 </td>
 
-
-
-                {days.map((_,dayIndex)=>(
-
-
-                  <td
-                    key={dayIndex}
-                    className="p-2"
-                  >
-
+                {days.map((_, dayIndex) => (
+                  <td key={dayIndex} className="p-2">
                     <span
                       className={`
                         block
@@ -219,53 +155,21 @@ function CalendarWidget() {
                         rounded-lg
                         py-2
                         ${getStatusStyle(
-                          status[
-                            (index + dayIndex) %
-                            status.length
-                          ]
+                          status[(index + dayIndex) % status.length],
                         )}
                       `}
                     >
-
-                      {
-                        status[
-                          (index + dayIndex) %
-                          status.length
-                        ]
-                      }
-
-
+                      {status[(index + dayIndex) % status.length]}
                     </span>
-
-
                   </td>
-
-
                 ))}
-
-
-
               </tr>
-
-
             ))}
-
-
-
           </tbody>
-
-
         </table>
-
-
       </div>
-
-
     </div>
-
   );
-
 }
-
 
 export default CalendarWidget;

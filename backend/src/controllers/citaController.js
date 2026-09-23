@@ -1,37 +1,34 @@
-// backend/src/controllers/citaController.js
-
-const db = require("../database/database");
-
 const appointmentService = require("../services/appointmentService");
 
-function listarCitas(req, res) {
+function aplicarHeadersCache(res) {
+  res.setHeader(
+    "Cache-Control",
+    "no-store, no-cache, must-revalidate, proxy-revalidate",
+  );
+
+  res.setHeader("Pragma", "no-cache");
+
+  res.setHeader("Expires", "0");
+}
+
+// GET /api/citas
+// GET /api/citas?estado=Pendiente
+// GET /api/citas?nombre=Juan
+
+function buscarCitas(req, res) {
+  aplicarHeadersCache(res);
+
   try {
-    const citas = db
-      .prepare(
-        `
-            SELECT
-                id,
-                nombre_cliente,
-                telefono,
-                marca_moto,
-                motivo_trabajo,
-                fecha,
-                bloque_hora,
-                estado
+    const citas = appointmentService.searchAppointments(req.query);
 
-            FROM citas
-
-            ORDER BY fecha ASC, bloque_hora ASC
-            `,
-      )
-      .all();
-
-    res.json({
+    res.status(200).json({
       ok: true,
 
       data: citas,
     });
   } catch (error) {
+    console.log("ERROR BUSCAR CITAS:", error.message);
+
     res.status(500).json({
       ok: false,
 
@@ -40,30 +37,17 @@ function listarCitas(req, res) {
   }
 }
 
+function listarCitas(req, res) {
+  buscarCitas(req, res);
+}
+
+// GET /api/citas/:id
+
 function obtenerCita(req, res) {
+  aplicarHeadersCache(res);
+
   try {
-    const { id } = req.params;
-
-    const cita = db
-      .prepare(
-        `
-            SELECT *
-
-            FROM citas
-
-            WHERE id = ?
-
-            `,
-      )
-      .get(id);
-
-    if (!cita) {
-      return res.status(404).json({
-        ok: false,
-
-        message: "Cita no encontrada",
-      });
-    }
+    const cita = appointmentService.getAppointmentById(req.params.id);
 
     res.json({
       ok: true,
@@ -71,7 +55,7 @@ function obtenerCita(req, res) {
       data: cita,
     });
   } catch (error) {
-    res.status(500).json({
+    res.status(404).json({
       ok: false,
 
       message: error.message,
@@ -79,16 +63,13 @@ function obtenerCita(req, res) {
   }
 }
 
+// PUT /api/citas/:id
+
 function actualizarEstado(req, res) {
   try {
-    const { id } = req.params;
-
-    const { estado } = req.body;
-
     const cita = appointmentService.updateAppointmentStatus(
-      id,
-
-      estado,
+      req.params.id,
+      req.body.estado,
     );
 
     res.json({
@@ -105,10 +86,37 @@ function actualizarEstado(req, res) {
   }
 }
 
+function calendario(req, res) {
+  try {
+    const { fecha } = req.query;
+
+    const citas = appointmentService
+      .getAppointments()
+      .filter((cita) => cita.fecha === fecha);
+
+    res.json({
+      ok: true,
+
+      data: citas,
+    });
+  } catch (error) {
+    console.log("ERROR CALENDARIO:", error.message);
+
+    res.status(500).json({
+      ok: false,
+
+      message: error.message,
+    });
+  }
+}
 module.exports = {
   listarCitas,
+
+  buscarCitas,
 
   obtenerCita,
 
   actualizarEstado,
+
+  calendario,
 };

@@ -22,12 +22,12 @@ function getOccupiedBlocks(fecha) {
   return db
     .prepare(
       `
-    SELECT bloque_hora
-    FROM citas
-    WHERE fecha = ?
-      AND estado = 'Pendiente'
-    ORDER BY bloque_hora
-  `,
+      SELECT bloque_hora
+      FROM citas
+      WHERE fecha = ?
+        AND estado IN ('Pendiente','Confirmado','Atendido')
+      ORDER BY bloque_hora
+      `,
     )
     .all(fecha)
     .map((cita) => cita.bloque_hora);
@@ -53,13 +53,13 @@ function isBlockAvailable(fecha, bloqueHora) {
   const cita = db
     .prepare(
       `
-    SELECT id
-    FROM citas
-    WHERE fecha = ?
-      AND bloque_hora = ?
-      AND estado = 'Pendiente'
-    LIMIT 1
-  `,
+      SELECT id
+      FROM citas
+      WHERE fecha = ?
+        AND bloque_hora = ?
+        AND estado IN ('Pendiente','Confirmado','Atendido')
+      LIMIT 1
+      `,
     )
     .get(fecha, bloqueHora);
 
@@ -365,57 +365,110 @@ function getWeeklySummary(fechaInicio, fechaFin) {
     servicios_atendidos: serviciosRows,
   };
 }
-
 function searchAppointments(filters = {}) {
   const {
     nombre,
+
     placa,
+
     telefono,
+
     estado,
+
     inicio,
+
     fin,
   } = filters;
 
   let query = `
-    SELECT *
-    FROM citas
-    WHERE 1=1
-  `;
+
+SELECT
+
+id,
+
+nombre_cliente,
+
+telefono,
+
+marca_moto,
+
+motivo_trabajo,
+
+fecha,
+
+bloque_hora,
+
+estado
+
+FROM citas
+
+WHERE 1=1
+
+`;
 
   const params = [];
 
-  if (nombre) {
-    query += ` AND nombre_cliente LIKE ? `;
-    params.push(`%${nombre}%`);
+  if (nombre && nombre.trim() !== "") {
+    query += `
+
+AND LOWER(nombre_cliente)
+LIKE LOWER(?)
+
+`;
+
+    params.push(`%${nombre.trim()}%`);
   }
 
-  if (placa) {
-    query += ` AND placa = ? `;
+  if (placa && placa.trim() !== "") {
+    query += `
+
+AND placa = ?
+
+`;
+
     params.push(normalizePlate(placa));
   }
 
-  if (telefono) {
-    query += ` AND telefono LIKE ? `;
-    params.push(`%${telefono}%`);
+  if (telefono && telefono.trim() !== "") {
+    query += `
+
+AND telefono LIKE ?
+
+`;
+
+    params.push(`%${telefono.trim()}%`);
   }
 
-  if (estado) {
-    query += ` AND estado = ? `;
-    params.push(estado);
+  if (estado && estado.trim() !== "") {
+    query += `
+
+AND estado = ?
+
+`;
+
+    params.push(estado.trim());
   }
 
   if (inicio && fin) {
-    query += ` AND fecha BETWEEN ? AND ? `;
+    query += `
+
+AND fecha BETWEEN ? AND ?
+
+`;
+
     params.push(inicio, fin);
   }
 
   query += `
-    ORDER BY fecha ASC, bloque_hora ASC
-  `;
 
-  return db.prepare(query).all(...params);
+ORDER BY fecha ASC, bloque_hora ASC
+
+`;
+
+  const resultado = db.prepare(query).all(...params);
+
+  return resultado;
 }
-
 
 module.exports = {
   getAllBlocks,

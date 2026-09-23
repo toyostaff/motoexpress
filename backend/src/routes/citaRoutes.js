@@ -2,38 +2,40 @@ const express = require("express");
 
 const router = express.Router();
 
+const citaController = require("../controllers/citaController");
 
-const citaController =
-require("../controllers/citaController");
-
-const authMiddleware =
-require("../middleware/authMiddleware");
+const authMiddleware = require("../middleware/authMiddleware");
 
 
-
-
+// CALENDARIO
 router.get(
-
-"/",
-
-authMiddleware,
-
-citaController.listarCitas
-
+  "/calendario",
+  citaController.calendario
 );
 
 
-
+// LISTAR / BUSCAR CITAS
 router.get(
-
-"/:id",
-
-authMiddleware,
-
-citaController.obtenerCita
-
+  "/",
+  authMiddleware,
+  citaController.buscarCitas
 );
 
+
+// OBTENER POR ID
+router.get(
+  "/:id",
+  authMiddleware,
+  citaController.obtenerCita
+);
+
+
+// ACTUALIZAR ESTADO
+router.put(
+  "/:id",
+  authMiddleware,
+  citaController.actualizarEstado
+);
 
 
 module.exports = router;
