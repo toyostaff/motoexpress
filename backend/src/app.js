@@ -10,47 +10,62 @@ const app = express();
 
 
 const corsOptions = {
-  origin:[
+  origin: [
     "http://localhost:5173",
     "https://silver-spork-7vrw4pp6grqqfxrr4-5173.app.github.dev",
     "https://motoexpress-frontend-production.up.railway.app"
   ],
-  credentials:true,
-  methods:[
+  credentials: true,
+  methods: [
     "GET",
     "POST",
     "PUT",
     "DELETE",
     "OPTIONS"
   ],
-  allowedHeaders:[
+  allowedHeaders: [
     "Content-Type",
     "Authorization"
   ]
 };
 
 
+// CORS
 app.use(cors(corsOptions));
 
+
+// Preflight OPTIONS
 app.options("*", cors(corsOptions));
 
 
+// JSON
 app.use(express.json());
 
 
-app.get("/api/health",(req,res)=>{
+// Debug temporal Railway
+app.use((req, res, next) => {
+  console.log(
+    `${req.method} ${req.originalUrl}`
+  );
+  next();
+});
+
+
+// Health check
+app.get("/api/health", (req, res) => {
   res.json({
-    ok:true,
-    service:"MotoExpress API"
+    ok: true,
+    service: "MotoExpress API"
   });
 });
 
 
-app.use("/api/auth",authRoutes);
+// Routes
+app.use("/api/auth", authRoutes);
 
-app.use("/api/admin",adminRoutes);
+app.use("/api/admin", adminRoutes);
 
-app.use("/api/citas",citaRoutes);
+app.use("/api/citas", citaRoutes);
 
 app.use("/api/appointments", appointmentRoutes);
 
