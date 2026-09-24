@@ -6,26 +6,35 @@ const jwt = require("jsonwebtoken");
 const db = require("../database/database");
 const config = require("../config/config");
 
-function login(usuario, password) {
-  const admin = db
-    .prepare(
-      `
-      SELECT id, usuario, password_hash
-      FROM administradores
-      WHERE usuario = ?
+async function login(usuario, password) {
+
+  const resultado = await db.query(
+    `
+    SELECT id, usuario, password_hash
+    FROM administradores
+    WHERE usuario = $1
     `,
-    )
-    .get(usuario);
+    [usuario]
+  );
+
+  const admin = resultado.rows[0];
+
 
   if (!admin) {
     return null;
   }
 
-  const passwordValida = bcrypt.compareSync(password, admin.password_hash);
+
+  const passwordValida = bcrypt.compareSync(
+    password,
+    admin.password_hash
+  );
+
 
   if (!passwordValida) {
     return null;
   }
+
 
   const token = jwt.sign(
     {
@@ -38,9 +47,10 @@ function login(usuario, password) {
     },
   );
 
+
   return {
     token,
-    administrador: {
+    administrador:{
       id: admin.id,
       usuario: admin.usuario,
     },

@@ -2,8 +2,8 @@
 
 const authService = require('../services/authService');
 
-function login(req, res) {
-  const { usuario, password } = req.body;
+async function login(req, res) {
+    const { usuario, password } = req.body;
 
   if (!usuario || !password) {
     return res.status(400).json({
@@ -12,7 +12,7 @@ function login(req, res) {
     });
   }
 
-  const resultado = authService.login(usuario, password);
+const resultado = await authService.login(usuario, password);
 
   if (!resultado) {
     return res.status(401).json({

@@ -1,12 +1,15 @@
 // backend/src/database/database.js
 
-const Database = require('better-sqlite3');
-const config = require('../config/config');
+const { Pool } = require("pg");
 
-const db = new Database(config.database.path);
+const config = require("../config/config");
 
-db.pragma('journal_mode = WAL');
-db.pragma('foreign_keys = ON');
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false,
+  },
+});
 
-module.exports = db;
+module.exports = pool;
 
