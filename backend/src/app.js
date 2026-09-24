@@ -16,9 +16,14 @@ app.use(
       "https://silver-spork-7vrw4pp6grqqfxrr4-5173.app.github.dev",
       "https://motoexpress-frontend-production.up.railway.app"
     ],
-    credentials:true
+    credentials:true,
+    methods:["GET","POST","PUT","DELETE","OPTIONS"],
+    allowedHeaders:["Content-Type","Authorization"]
   })
 );
+
+app.options("*", cors());
+
 app.use(express.json());
 
 
@@ -36,6 +41,9 @@ app.use("/api/admin",adminRoutes);
 
 // IMPORTANTE
 app.use("/api/citas",citaRoutes);
+
+
+app.use("/api/appointments", appointmentRoutes);
 
 
 module.exports = app;
