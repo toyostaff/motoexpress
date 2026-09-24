@@ -13,12 +13,12 @@ app.use(
   cors({
     origin:[
       "http://localhost:5173",
-      process.env.FRONTEND_URL
+      "https://silver-spork-7vrw4pp6grqqfxrr4-5173.app.github.dev",
+      "https://motoexpress-frontend-production.up.railway.app"
     ],
     credentials:true
   })
 );
-
 app.use(express.json());
 
 
