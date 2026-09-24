@@ -13,12 +13,11 @@ app.use(
   cors({
     origin:[
       "http://localhost:5173",
-      "https://silver-spork-7vrw4pp6grqqfxrr4-5173.app.github.dev"
+      process.env.FRONTEND_URL
     ],
     credentials:true
   })
 );
-
 
 app.use(express.json());
 
