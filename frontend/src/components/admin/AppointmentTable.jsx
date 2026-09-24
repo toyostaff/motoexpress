@@ -1,6 +1,27 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useTheme } from "../../context/ThemeContext";
 
 function AppointmentTable({ citas = [], cargando }) {
+  const { darkMode } = useTheme();
+  const [pagina, setPagina] = useState(1);
+
+const porPagina = 10;
+
+const citasOrdenadas = [...citas].sort(
+  (a,b) => b.id - a.id
+);
+
+const totalPaginas = Math.ceil(
+  citasOrdenadas.length / porPagina
+);
+
+const citasMostrar = citasOrdenadas.slice(
+  (pagina - 1) * porPagina,
+  pagina * porPagina
+);
+
+
   const estadoColor = (estado) => {
     switch (estado) {
       case "Pendiente":
@@ -25,29 +46,38 @@ function AppointmentTable({ citas = [], cargando }) {
 
   return (
     <div
-      className="
-        bg-white
+      className={`
         rounded-xl
         shadow-sm
         border
-        border-gray-100
         mt-8
         overflow-hidden
-      "
+
+        ${
+          darkMode
+            ? "bg-slate-900 border-slate-700"
+            : "bg-white border-gray-100"
+        }
+
+      `}
     >
       <div
-        className="
+        className={`
           p-5
           border-b
-          border-gray-100
-        "
+
+          ${darkMode ? "border-slate-700" : "border-gray-100"}
+
+        `}
       >
         <h3
-          className="
+          className={`
             text-xl
             font-bold
-            text-gray-800
-          "
+
+            ${darkMode ? "text-white" : "text-gray-800"}
+
+          `}
         >
           Últimas citas
         </h3>
@@ -56,11 +86,16 @@ function AppointmentTable({ citas = [], cargando }) {
       <div className="overflow-x-auto">
         <table className="w-full text-left">
           <thead
-            className="
-              bg-gray-50
-              text-gray-600
+            className={`
               text-sm
-            "
+
+              ${
+                darkMode
+                  ? "bg-slate-800 text-gray-300"
+                  : "bg-gray-50 text-gray-600"
+              }
+
+            `}
           >
             <tr>
               <th className="px-5 py-4">Cliente</th>
@@ -105,62 +140,177 @@ function AppointmentTable({ citas = [], cargando }) {
                   No existen citas registradas
                 </td>
               </tr>
-            ) : (
-              citas.slice(0, 5).map((item) => (
-                <tr
-                  key={item.id}
-                  className="
-                      border-t
-                      hover:bg-gray-50
-                    "
-                >
-                  <td className="px-5 py-4">
-                    <div className="font-semibold">{item.nombre_cliente}</div>
+            ) :(
+  citasMostrar.map((item) => (
+                  <tr
+                    key={item.id}
+                    className={`
+                    border-t
 
-                    <div className="text-sm text-gray-500">{item.telefono}</div>
-                  </td>
+                    ${
+                      darkMode
+                        ? "border-slate-700 hover:bg-slate-800"
+                        : "hover:bg-gray-50"
+                    }
 
-                  <td className="px-5 py-4">{item.marca_moto}</td>
+                  `}
+                  >
+                    <td className="px-5 py-4">
+                      <div
+                        className={`
+                        font-semibold
 
-                  <td className="px-5 py-4">{item.motivo_trabajo}</td>
+                        ${darkMode ? "text-white" : "text-gray-800"}
 
-                  <td className="px-5 py-4">{item.fecha}</td>
+                      `}
+                      >
+                        {item.nombre_cliente}
+                      </div>
 
-                  <td className="px-5 py-4">{item.bloque_hora}</td>
+                      <div
+                        className={`
+                        text-sm
 
-                  <td className="px-5 py-4">
-                    <span
+                        ${darkMode ? "text-gray-400" : "text-gray-500"}
+
+                      `}
+                      >
+                        {item.telefono}
+                      </div>
+                    </td>
+
+                    <td
                       className={`
-                          px-3
-                          py-1
-                          rounded-full
-                          text-xs
-                          font-semibold
-                          ${estadoColor(item.estado)}
-                        `}
-                    >
-                      {item.estado}
-                    </span>
-                  </td>
+                      px-5
+                      py-4
 
-                  <td className="px-5 py-4">
-                    <Link
-                      to={`/admin/citas/${item.id}`}
-                      className="
-                          text-[#FF6A00]
-                          font-semibold
-                          hover:underline
-                        "
+                      ${darkMode ? "text-gray-300" : "text-gray-700"}
+
+                    `}
                     >
-                      Ver detalle
-                    </Link>
-                  </td>
-                </tr>
-              ))
+                      {item.marca_moto}
+                    </td>
+
+                    <td
+                      className={`
+                      px-5
+                      py-4
+
+                      ${darkMode ? "text-gray-300" : "text-gray-700"}
+
+                    `}
+                    >
+                      {item.motivo_trabajo}
+                    </td>
+
+                    <td
+                      className={`
+                      px-5
+                      py-4
+
+                      ${darkMode ? "text-gray-300" : "text-gray-700"}
+
+                    `}
+                    >
+                      {item.fecha}
+                    </td>
+
+                    <td
+                      className={`
+                      px-5
+                      py-4
+
+                      ${darkMode ? "text-gray-300" : "text-gray-700"}
+
+                    `}
+                    >
+                      {item.bloque_hora}
+                    </td>
+
+                    <td className="px-5 py-4">
+                      <span
+                        className={`
+                        px-3
+                        py-1
+                        rounded-full
+                        text-xs
+                        font-semibold
+
+                        ${estadoColor(item.estado)}
+
+                      `}
+                      >
+                        {item.estado}
+                      </span>
+                    </td>
+
+                    <td className="px-5 py-4">
+                      <Link
+                        to={`/admin/citas/${item.id}`}
+                        className="
+                        text-[#FF6A00]
+                        font-semibold
+                        hover:underline
+                      "
+                      >
+                        Ver detalle
+                      </Link>
+                    </td>
+                  </tr>
+                ))
             )}
-          </tbody>
-        </table>
-      </div>
+       </tbody>
+</table>
+
+<div className="
+flex
+justify-end
+items-center
+gap-4
+p-5
+">
+
+<button
+disabled={pagina === 1}
+onClick={() => setPagina(pagina - 1)}
+className="
+px-4
+py-2
+rounded-lg
+bg-gray-600
+disabled:opacity-50
+"
+>
+Anterior
+</button>
+
+
+<span className="
+font-semibold
+">
+Página {pagina} de {totalPaginas}
+</span>
+
+
+<button
+disabled={pagina === totalPaginas}
+onClick={() => setPagina(pagina + 1)}
+className="
+px-4
+py-2
+rounded-lg
+bg-[#FF6A00]
+text-white
+disabled:opacity-50
+"
+>
+Siguiente
+</button>
+
+
+</div>
+
+</div>
     </div>
   );
 }

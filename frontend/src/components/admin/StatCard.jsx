@@ -1,115 +1,43 @@
-function StatCard({
-  title,
-  value,
-  icon,
-  color,
-  subtitle
-}) {
+import { useTheme } from "../../context/ThemeContext";
 
+function StatCard({ title, value, icon, color }) {
+  const { darkMode } = useTheme();
 
   return (
-
     <div
-
-      className="
-        bg-white
-        rounded-xl
-        shadow-md
-        hover:shadow-lg
-        transition
-        p-5
-        border
-        border-gray-100
-        flex
-        items-center
-        justify-between
-      "
-
+      className={`border rounded-xl p-5 flex justify-between items-center transition-colors ${
+        darkMode
+          ? "bg-slate-900 border-slate-800 text-white"
+          : "bg-white border-gray-200 text-gray-800"
+      }`}
     >
-
-
       <div>
-
-
         <p
-          className="
-            text-gray-500
-            text-sm
-            mb-2
-          "
+          className={`text-sm ${
+            darkMode ? "text-gray-400" : "text-gray-500"
+          }`}
         >
-
           {title}
-
         </p>
-
-
 
         <h3
-
-          className="
-            text-3xl
-            font-bold
-            text-gray-800
-          "
-
+          className={`text-3xl font-bold mt-1 ${
+            darkMode ? "text-white" : "text-gray-800"
+          }`}
         >
-
           {value}
-
         </h3>
-
-
-
-        <p
-
-          className="
-            text-xs
-            text-green-600
-            mt-2
-            font-medium
-          "
-
-        >
-
-          {subtitle}
-
-        </p>
-
-
-
       </div>
-
-
-
 
       <div
-
-        className={`
-          w-14
-          h-14
-          rounded-full
-          flex
-          items-center
-          justify-center
-          text-2xl
-          ${color}
-        `}
-
+        className={`w-12 h-12 rounded-full flex items-center justify-center text-xl ${
+          darkMode ? "bg-slate-800" : color || "bg-gray-100"
+        }`}
       >
-
         {icon}
-
-
       </div>
-
-
-
     </div>
-
   );
-
 }
-
 
 export default StatCard;

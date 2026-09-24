@@ -9,33 +9,48 @@ const authMiddleware = require("../middleware/authMiddleware");
 
 // CALENDARIO
 router.get(
-  "/calendario",
-  citaController.calendario
+ "/calendario",
+ citaController.calendario
 );
 
 
-// LISTAR / BUSCAR CITAS
+// DISPONIBILIDAD
 router.get(
-  "/",
-  authMiddleware,
-  citaController.buscarCitas
+ "/ocupados",
+ citaController.ocupados
 );
 
 
-// OBTENER POR ID
+// LISTAR
 router.get(
-  "/:id",
-  authMiddleware,
-  citaController.obtenerCita
+ "/",
+ authMiddleware,
+ citaController.buscarCitas
 );
 
+
+// OBTENER ID
+router.get(
+ "/:id",
+ authMiddleware,
+ citaController.obtenerCita
+);
 
 // ACTUALIZAR ESTADO
 router.put(
-  "/:id",
-  authMiddleware,
-  citaController.actualizarEstado
+ "/:id/estado",
+ authMiddleware,
+ citaController.actualizarEstado
 );
+
+// CREAR CITA CLIENTE
+
+router.post(
+  "/agendar",
+  citaController.crearCita
+);
+
+
 
 
 module.exports = router;

@@ -8,53 +8,31 @@ import Dashboard from "../pages/Dashboard";
 
 import Citas from "../components/admin/Citas";
 import Calendario from "../components/admin/Calendario";
+
 import Clientes from "../components/admin/Clientes";
 import Servicios from "../components/admin/Servicios";
 import Reportes from "../components/admin/Reportes";
 import Configuracion from "../components/admin/Configuracion";
 import DetalleCita from "../components/admin/DetalleCita";
+import Semanal from "../components/admin/Semanal";
 
 import ProtectedRoute from "../components/auth/ProtectedRoute";
 
-
 function AppRouter() {
-
-
   return (
-
     <BrowserRouter>
-
-
       <Routes>
-
-
         {/* Público */}
 
-        <Route
-          path="/"
-          element={<Home />}
-        />
+        <Route path="/" element={<Home />} />
 
-
-        <Route
-          path="/reservar"
-          element={<Booking />}
-        />
-
-
+        <Route path="/reservar" element={<Booking />} />
 
         {/* Login */}
 
-        <Route
-          path="/admin/login"
-          element={<Login />}
-        />
-
-
-
+        <Route path="/admin/login" element={<Login />} />
 
         {/* Panel administrador */}
-
 
         <Route
           path="/admin/dashboard"
@@ -65,8 +43,6 @@ function AppRouter() {
           }
         />
 
-
-
         <Route
           path="/admin/citas"
           element={
@@ -75,8 +51,6 @@ function AppRouter() {
             </ProtectedRoute>
           }
         />
-
-
 
         <Route
           path="/admin/citas/:id"
@@ -87,8 +61,6 @@ function AppRouter() {
           }
         />
 
-
-
         <Route
           path="/admin/calendario"
           element={
@@ -98,7 +70,14 @@ function AppRouter() {
           }
         />
 
-
+        <Route
+          path="/admin/semanal"
+          element={
+            <ProtectedRoute>
+              <Semanal />
+            </ProtectedRoute>
+          }
+        />
 
         <Route
           path="/admin/clientes"
@@ -109,8 +88,6 @@ function AppRouter() {
           }
         />
 
-
-
         <Route
           path="/admin/servicios"
           element={
@@ -119,8 +96,6 @@ function AppRouter() {
             </ProtectedRoute>
           }
         />
-
-
 
         <Route
           path="/admin/reportes"
@@ -131,8 +106,6 @@ function AppRouter() {
           }
         />
 
-
-
         <Route
           path="/admin/configuracion"
           element={
@@ -142,30 +115,12 @@ function AppRouter() {
           }
         />
 
-
-
         {/* Redirección base admin */}
 
-        <Route
-          path="/admin"
-          element={
-            <Navigate
-              to="/admin/login"
-              replace
-            />
-          }
-        />
-
-
-
+        <Route path="/admin" element={<Navigate to="/admin/login" replace />} />
       </Routes>
-
-
     </BrowserRouter>
-
   );
-
 }
-
 
 export default AppRouter;

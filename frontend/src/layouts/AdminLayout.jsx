@@ -1,41 +1,51 @@
 import Sidebar from "../components/admin/Sidebar";
 import NavbarAdmin from "../components/admin/NavbarAdmin";
-
+import { useTheme } from "../context/ThemeContext";
 
 function AdminLayout({ children }) {
+  const { darkMode } = useTheme();
 
-    return (
+  return (
+    <div
+      className={`
 
-        <div className="min-h-screen bg-slate-100 flex">
+                min-h-screen
 
-            {/* Sidebar */}
-            <Sidebar />
-
-
-            {/* Área principal */}
-            <div className="flex-1 flex flex-col">
+                flex
 
 
-                {/* Navbar superior */}
-                <NavbarAdmin />
+                ${
+                  darkMode
+                    ? "bg-slate-950 text-white"
+                    : "bg-slate-100 text-gray-800"
+                }
 
 
-                {/* Contenido */}
-                <main className="p-6 flex-1">
+            `}
+    >
+      <Sidebar />
 
-                    {children}
+      <div className="flex-1 flex flex-col">
+        <NavbarAdmin />
 
-                </main>
+        <main
+          className={`
+
+                        p-6
+
+                        flex-1
 
 
-            </div>
+                        ${darkMode ? "bg-slate-950" : "bg-slate-100"}
 
 
-        </div>
-
-    );
-
+                    `}
+        >
+          {children}
+        </main>
+      </div>
+    </div>
+  );
 }
-
 
 export default AdminLayout;

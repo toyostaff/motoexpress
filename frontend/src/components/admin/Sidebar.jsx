@@ -1,11 +1,12 @@
 import { NavLink } from "react-router-dom";
-
 import logo from "../../assets/images/logo_X.png";
+import { useTheme } from "../../context/ThemeContext";
 
 function Sidebar() {
+  const { darkMode, cambiarTema } = useTheme();
+
   const cerrarSesion = () => {
     localStorage.clear();
-
     window.location.href = "/admin/login";
   };
 
@@ -35,48 +36,17 @@ function Sidebar() {
     },
 
     {
-      title: "GESTIÓN",
+      title: "SEMANAL",
 
       items: [
         {
-          name: "Clientes",
-          icon: "🏍️",
-          path: "/admin/clientes",
-        },
-
-        {
-          name: "Servicios",
-          icon: "🔧",
-          path: "/admin/servicios",
-        },
-      ],
-    },
-
-    {
-      title: "REPORTES",
-
-      items: [
-        {
-          name: "Reportes",
-          icon: "📊",
-          path: "/admin/reportes",
-        },
-      ],
-    },
-
-    {
-      title: "SISTEMA",
-
-      items: [
-        {
-          name: "Configuración",
-          icon: "⚙️",
-          path: "/admin/configuracion",
+          name: "Agenda semanal",
+          icon: "📆",
+          path: "/admin/semanal",
         },
       ],
     },
   ];
-
   return (
     <aside
       className="
@@ -145,21 +115,16 @@ function Sidebar() {
         "
       >
         {sections.map((section, index) => (
-          <div
-            key={index}
-            className="
-                mb-6
-              "
-          >
+          <div key={index} className="mb-6">
             <p
               className="
-                  text-[11px]
-                  text-gray-400
-                  font-semibold
-                  tracking-wider
-                  px-3
-                  mb-3
-                "
+                text-[11px]
+                text-gray-400
+                font-semibold
+                tracking-wider
+                px-3
+                mb-3
+              "
             >
               {section.title}
             </p>
@@ -170,43 +135,26 @@ function Sidebar() {
                 to={item.path}
                 className={({ isActive }) =>
                   `
+                    flex
+                    items-center
+                    gap-3
+                    px-4
+                    py-3
+                    mb-1
+                    rounded-lg
+                    transition
+                    text-sm
 
-                      flex
+                    ${
+                      isActive
+                        ? "bg-[#FF6A00] text-white shadow-lg"
+                        : "text-gray-300 hover:bg-white/10"
+                    }
 
-                      items-center
-
-                      gap-3
-
-                      px-4
-
-                      py-3
-
-                      mb-1
-
-                      rounded-lg
-
-                      transition
-
-                      text-sm
-
-
-                      ${
-                        isActive
-                          ? "bg-[#FF6A00] text-white shadow-lg"
-                          : "text-gray-300 hover:bg-white/10"
-                      }
-
-
-                      `
+                    `
                 }
               >
-                <span
-                  className="
-                        text-lg
-                      "
-                >
-                  {item.icon}
-                </span>
+                <span className="text-lg">{item.icon}</span>
 
                 <span>{item.name}</span>
               </NavLink>
@@ -214,6 +162,36 @@ function Sidebar() {
           </div>
         ))}
       </nav>
+
+      {/* TEMA */}
+
+      <div
+        className="
+          px-4
+          pb-3
+        "
+      >
+        <button
+          onClick={cambiarTema}
+          className="
+w-full
+flex
+items-center
+gap-3
+px-4
+py-3
+rounded-lg
+text-gray-300
+hover:bg-white/10
+transition
+text-sm
+"
+        >
+          <span>{darkMode ? "☀️" : "🌙"}</span>
+
+          {darkMode ? "Tema claro" : "Tema oscuro"}
+        </button>
+      </div>
 
       {/* CERRAR SESIÓN */}
 
