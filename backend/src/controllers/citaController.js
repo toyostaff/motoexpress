@@ -4,93 +4,143 @@ const db = require("../database/database");
 
 
 function aplicarHeadersCache(res) {
+
   res.setHeader(
     "Cache-Control",
-    "no-store, no-cache, must-revalidate, proxy-revalidate",
+    "no-store, no-cache, must-revalidate, proxy-revalidate"
   );
 
-  res.setHeader("Pragma", "no-cache");
+  res.setHeader(
+    "Pragma",
+    "no-cache"
+  );
 
-  res.setHeader("Expires", "0");
+  res.setHeader(
+    "Expires",
+    "0"
+  );
+
 }
 
 
+
 // GET /api/citas
-function buscarCitas(req, res) {
+async function buscarCitas(req,res){
 
   aplicarHeadersCache(res);
 
   try {
 
-    const citas = appointmentService.searchAppointments(req.query);
+
+    const citas =
+      await appointmentService.searchAppointments(
+        req.query
+      );
+
 
     res.status(200).json({
-      ok: true,
-      data: citas,
+
+      ok:true,
+
+      data:citas
+
     });
 
 
-  } catch(error) {
 
-    console.log("ERROR BUSCAR CITAS:", error.message);
+  } catch(error){
+
+
+    console.log(
+      "ERROR BUSCAR CITAS:",
+      error.message
+    );
+
 
     res.status(500).json({
+
       ok:false,
+
       message:error.message
+
     });
+
 
   }
 
 }
 
 
-function listarCitas(req,res){
+
+async function listarCitas(req,res){
 
   buscarCitas(req,res);
 
 }
 
 
+
+
+
 // GET /api/citas/:id
-function obtenerCita(req,res){
+async function obtenerCita(req,res){
 
   aplicarHeadersCache(res);
 
+
   try {
 
-    const cita = appointmentService.getAppointmentById(
-      req.params.id
-    );
+
+    const cita =
+      await appointmentService.getAppointmentById(
+        req.params.id
+      );
+
 
 
     res.json({
+
       ok:true,
+
       data:cita
+
     });
 
 
-  } catch(error){
+
+  }catch(error){
+
 
     res.status(404).json({
+
       ok:false,
+
       message:error.message
+
     });
+
 
   }
 
 }
 
 
+
+
+
 // PUT /api/citas/:id/estado
-function actualizarEstado(req,res){
+async function actualizarEstado(req,res){
+
 
   try {
 
 
-    const cita = appointmentService.updateAppointmentStatus(
-      req.params.id,
-      req.body.estado
-    );
+    const cita =
+      await appointmentService.updateAppointmentStatus(
+        req.params.id,
+        req.body.estado
+      );
+
 
 
     res.json({
@@ -102,7 +152,8 @@ function actualizarEstado(req,res){
     });
 
 
-  } catch(error){
+
+  }catch(error){
 
 
     res.status(400).json({
@@ -120,8 +171,10 @@ function actualizarEstado(req,res){
 
 
 
+
+
 // GET /api/citas/calendario
-function calendario(req,res){
+async function calendario(req,res){
 
 
   try {
@@ -130,23 +183,29 @@ function calendario(req,res){
     const {fecha}=req.query;
 
 
-    const citas = appointmentService
-      .getAppointments()
-      .filter(
-        cita=>cita.fecha===fecha
+    const citas =
+      await appointmentService.getAppointments();
+
+
+
+    const filtradas =
+      citas.filter(
+        cita=>cita.fecha === fecha
       );
+
 
 
     res.json({
 
       ok:true,
 
-      data:citas
+      data:filtradas
 
     });
 
 
-  } catch(error){
+
+  }catch(error){
 
 
     console.log(
@@ -170,6 +229,8 @@ function calendario(req,res){
 
 
 
+
+
 // GET /api/citas/ocupados?fecha=YYYY-MM-DD
 async function ocupados(req,res){
 
@@ -178,6 +239,7 @@ async function ocupados(req,res){
 
 
     const {fecha}=req.query;
+
 
 
     if(!fecha){
@@ -192,126 +254,48 @@ async function ocupados(req,res){
 
 
 
-    const resultado = await db.query(
-      `
-      SELECT bloque_hora
-      FROM citas
-      WHERE fecha = $1
-      AND estado NOT IN ('Cancelado','No realizado')
-      `,
-      [fecha]
-    );
+    const resultado =
+      await db.query(
+        `
+        SELECT bloque_hora
+        FROM citas
+        WHERE fecha = $1
+        AND estado NOT IN ('Cancelado','No realizado')
+        `,
+        [fecha]
+      );
 
 
 
-    const citas = resultado.rows;
+    const citas =
+      resultado.rows;
 
 
 
     const horas = [
 
       "08:00 - 09:00",
-
       "09:00 - 10:00",
-
       "10:00 - 11:00",
-
       "11:00 - 12:00",
-
       "12:00 - 13:00",
-
       "14:00 - 15:00",
-
       "15:00 - 16:00",
-
       "16:00 - 17:00",
-
       "17:00 - 18:00",
-
       "18:00 - 19:00",
-
       "19:00 - 20:00",
-
       "20:00 - 21:00",
-
-      "21:00 - 22:00",
+      "21:00 - 22:00"
 
     ];
 
 
 
-    const ocupados = citas.map(
-      item=>item.bloque_hora
-    );
-
-
-
-    const ahora = new Date();
-
-
-    const fechaHoy =
-      `${ahora.getFullYear()}-${String(
-        ahora.getMonth()+1
-      ).padStart(2,"0")}-${String(
-        ahora.getDate()
-      ).padStart(2,"0")}`;
-
-
-
-    const horaActual =
-      ahora.getHours();
-
-
-
-
-    const disponibles = horas.filter(
-      hora=>{
-
-
-        if(
-          ocupados.includes(hora)
-        ){
-
-          return false;
-
-        }
-
-
-
-        if(fecha < fechaHoy){
-
-          return false;
-
-        }
-
-
-
-        if(fecha===fechaHoy){
-
-
-          const horaInicio =
-            parseInt(
-              hora.substring(0,2)
-            );
-
-
-          if(horaInicio <= horaActual){
-
-            return false;
-
-          }
-
-
-        }
-
-
-
-        return true;
-
-
-      }
-    );
-
+    const ocupados =
+      citas.map(
+        item=>item.bloque_hora
+      );
 
 
 
@@ -319,7 +303,10 @@ async function ocupados(req,res){
 
       fecha,
 
-      disponibles,
+      disponibles:
+        horas.filter(
+          hora=>!ocupados.includes(hora)
+        ),
 
       ocupados
 
@@ -327,7 +314,7 @@ async function ocupados(req,res){
 
 
 
-  } catch(error){
+  }catch(error){
 
 
     console.error(
@@ -350,15 +337,16 @@ async function ocupados(req,res){
 
 
 
+
 // POST /api/citas/agendar
-function crearCita(req,res){
+async function crearCita(req,res){
 
 
   try {
 
 
     const cita =
-      appointmentService.createAppointment(
+      await appointmentService.createAppointment(
         req.body,
         false
       );
@@ -377,7 +365,7 @@ function crearCita(req,res){
 
 
 
-  } catch(error){
+  }catch(error){
 
 
     console.log(
@@ -402,7 +390,7 @@ function crearCita(req,res){
 
 
 
-module.exports={
+module.exports = {
 
   listarCitas,
 
