@@ -8,66 +8,41 @@ const citaRoutes = require("./routes/citaRoutes");
 
 const app = express();
 
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://silver-spork-7vrw4pp6grqqfxrr4-5173.app.github.dev",
-  "https://motoexpress-frontend-production.up.railway.app",
-];
 
-// CORS
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      // Permitir Postman, Railway health check, pruebas internas
-      if (!origin) {
-        return callback(null, true);
-      }
+app.use(cors({
+    origin: "*",
+    methods: [
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE",
+        "OPTIONS"
+    ],
+    allowedHeaders: [
+        "Content-Type",
+        "Authorization"
+    ]
+}));
 
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
 
-      console.log("CORS bloqueado:", origin);
-
-      return callback(null, false);
-    },
-
-    credentials: true,
-
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-
-    allowedHeaders: ["Content-Type", "Authorization"],
-  }),
-);
-
-// Preflight
 app.options("*", cors());
 
-// JSON
+
 app.use(express.json());
 
-// Debug
-app.use((req, res, next) => {
-  console.log("REQUEST:", req.method, req.originalUrl);
 
-  next();
+app.get("/api/health",(req,res)=>{
+    res.json({
+        ok:true,
+        service:"MotoExpress API"
+    });
 });
 
-// Health
-app.get("/api/health", (req, res) => {
-  res.json({
-    ok: true,
-    service: "MotoExpress API",
-  });
-});
 
-// Routes
-app.use("/api/auth", authRoutes);
+app.use("/api/auth",authRoutes);
+app.use("/api/admin",adminRoutes);
+app.use("/api/citas",citaRoutes);
+app.use("/api/appointments",appointmentRoutes);
 
-app.use("/api/admin", adminRoutes);
-
-app.use("/api/citas", citaRoutes);
-
-app.use("/api/appointments", appointmentRoutes);
 
 module.exports = app;
