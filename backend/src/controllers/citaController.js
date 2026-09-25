@@ -1,12 +1,7 @@
 const appointmentService = require("../services/appointmentService");
 
 const db = require("../database/database");
-const ahora = new Date();
 
-const fechaActual = ahora.toISOString().split("T")[0];
-
-const horaActual = ahora.getHours();
-const minutosActual = ahora.getMinutes();
 
 function aplicarHeadersCache(res) {
   res.setHeader(
@@ -19,213 +14,370 @@ function aplicarHeadersCache(res) {
   res.setHeader("Expires", "0");
 }
 
-// GET /api/citas
-// GET /api/citas?estado=Pendiente
-// GET /api/citas?nombre=Juan
 
+// GET /api/citas
 function buscarCitas(req, res) {
+
   aplicarHeadersCache(res);
 
   try {
+
     const citas = appointmentService.searchAppointments(req.query);
 
     res.status(200).json({
       ok: true,
-
       data: citas,
     });
-  } catch (error) {
+
+
+  } catch(error) {
+
     console.log("ERROR BUSCAR CITAS:", error.message);
 
     res.status(500).json({
-      ok: false,
-
-      message: error.message,
+      ok:false,
+      message:error.message
     });
+
   }
+
 }
 
-function listarCitas(req, res) {
-  buscarCitas(req, res);
+
+function listarCitas(req,res){
+
+  buscarCitas(req,res);
+
 }
+
 
 // GET /api/citas/:id
+function obtenerCita(req,res){
 
-function obtenerCita(req, res) {
   aplicarHeadersCache(res);
 
   try {
-    const cita = appointmentService.getAppointmentById(req.params.id);
 
-    res.json({
-      ok: true,
-
-      data: cita,
-    });
-  } catch (error) {
-    res.status(404).json({
-      ok: false,
-
-      message: error.message,
-    });
-  }
-}
-
-// PUT /api/citas/:id
-
-function actualizarEstado(req, res) {
-  try {
-    const cita = appointmentService.updateAppointmentStatus(
-      req.params.id,
-      req.body.estado,
+    const cita = appointmentService.getAppointmentById(
+      req.params.id
     );
 
+
     res.json({
-      ok: true,
-
-      data: cita,
+      ok:true,
+      data:cita
     });
-  } catch (error) {
-    res.status(400).json({
-      ok: false,
 
-      message: error.message,
+
+  } catch(error){
+
+    res.status(404).json({
+      ok:false,
+      message:error.message
     });
+
   }
+
 }
 
-function calendario(req, res) {
+
+// PUT /api/citas/:id/estado
+function actualizarEstado(req,res){
+
   try {
-    const { fecha } = req.query;
+
+
+    const cita = appointmentService.updateAppointmentStatus(
+      req.params.id,
+      req.body.estado
+    );
+
+
+    res.json({
+
+      ok:true,
+
+      data:cita
+
+    });
+
+
+  } catch(error){
+
+
+    res.status(400).json({
+
+      ok:false,
+
+      message:error.message
+
+    });
+
+
+  }
+
+}
+
+
+
+// GET /api/citas/calendario
+function calendario(req,res){
+
+
+  try {
+
+
+    const {fecha}=req.query;
+
 
     const citas = appointmentService
       .getAppointments()
-      .filter((cita) => cita.fecha === fecha);
+      .filter(
+        cita=>cita.fecha===fecha
+      );
+
 
     res.json({
-      ok: true,
 
-      data: citas,
+      ok:true,
+
+      data:citas
+
     });
-  } catch (error) {
-    console.log("ERROR CALENDARIO:", error.message);
+
+
+  } catch(error){
+
+
+    console.log(
+      "ERROR CALENDARIO:",
+      error.message
+    );
+
 
     res.status(500).json({
-      ok: false,
 
-      message: error.message,
+      ok:false,
+
+      message:error.message
+
     });
-  }
-}
-function ocupados(req, res) {
-  try {
-    const { fecha } = req.query;
 
-    if (!fecha) {
+
+  }
+
+}
+
+
+
+// GET /api/citas/ocupados?fecha=YYYY-MM-DD
+async function ocupados(req,res){
+
+
+  try {
+
+
+    const {fecha}=req.query;
+
+
+    if(!fecha){
+
       return res.status(400).json({
-        mensaje: "Fecha requerida",
+
+        mensaje:"Fecha requerida"
+
       });
+
     }
 
-    const citas = db
-      .prepare(
-        `
+
+
+    const resultado = await db.query(
+      `
       SELECT bloque_hora
       FROM citas
-      WHERE fecha = ?
+      WHERE fecha = $1
       AND estado NOT IN ('Cancelado','No realizado')
-    `,
-      )
-      .all(fecha);
+      `,
+      [fecha]
+    );
+
+
+
+    const citas = resultado.rows;
+
+
 
     const horas = [
+
       "08:00 - 09:00",
+
       "09:00 - 10:00",
+
       "10:00 - 11:00",
+
       "11:00 - 12:00",
+
       "12:00 - 13:00",
+
       "14:00 - 15:00",
+
       "15:00 - 16:00",
+
       "16:00 - 17:00",
+
       "17:00 - 18:00",
+
       "18:00 - 19:00",
+
       "19:00 - 20:00",
+
       "20:00 - 21:00",
+
       "21:00 - 22:00",
+
     ];
 
-    const ocupados = citas.map((item) => item.bloque_hora);
+
+
+    const ocupados = citas.map(
+      item=>item.bloque_hora
+    );
+
+
 
     const ahora = new Date();
 
-    // Fecha actual formato YYYY-MM-DD
-    const fechaHoy = `${ahora.getFullYear()}-${String(
-      ahora.getMonth() + 1,
-    ).padStart(2, "0")}-${String(ahora.getDate()).padStart(2, "0")}`;
 
-    const horaActual = ahora.getHours();
+    const fechaHoy =
+      `${ahora.getFullYear()}-${String(
+        ahora.getMonth()+1
+      ).padStart(2,"0")}-${String(
+        ahora.getDate()
+      ).padStart(2,"0")}`;
 
-    const disponibles = horas.filter((hora) => {
-      // Si ya existe una cita
-      if (ocupados.includes(hora)) {
-        return false;
-      }
 
-      // Fechas anteriores
-      if (fecha < fechaHoy) {
-        return false;
-      }
 
-      // Si es hoy
-      if (fecha === fechaHoy) {
-        const horaInicio = parseInt(hora.substring(0, 2));
+    const horaActual =
+      ahora.getHours();
 
-        // Bloque ya iniciado
-        if (horaInicio <= horaActual) {
+
+
+
+    const disponibles = horas.filter(
+      hora=>{
+
+
+        if(
+          ocupados.includes(hora)
+        ){
+
           return false;
-        }
-      }
 
-      return true;
-    });
+        }
+
+
+
+        if(fecha < fechaHoy){
+
+          return false;
+
+        }
+
+
+
+        if(fecha===fechaHoy){
+
+
+          const horaInicio =
+            parseInt(
+              hora.substring(0,2)
+            );
+
+
+          if(horaInicio <= horaActual){
+
+            return false;
+
+          }
+
+
+        }
+
+
+
+        return true;
+
+
+      }
+    );
+
+
+
 
     res.json({
+
       fecha,
 
       disponibles,
 
-      ocupados,
+      ocupados
+
     });
-  } catch (error) {
-    console.error("ERROR OCUPADOS:", error);
+
+
+
+  } catch(error){
+
+
+    console.error(
+      "ERROR OCUPADOS:",
+      error
+    );
+
 
     res.status(500).json({
-      mensaje: "Error cargando disponibilidad",
+
+      mensaje:"Error cargando disponibilidad"
+
     });
+
+
   }
+
 }
-function crearCita(req, res) {
+
+
+
+
+// POST /api/citas/agendar
+function crearCita(req,res){
+
 
   try {
 
-    const cita = appointmentService.createAppointment(
-      req.body,
-      false
-    );
+
+    const cita =
+      appointmentService.createAppointment(
+        req.body,
+        false
+      );
+
 
 
     res.status(201).json({
 
-      ok: true,
+      ok:true,
 
-      message: "Cita registrada correctamente",
+      message:"Cita registrada correctamente",
 
-      data: cita
+      data:cita
 
     });
 
 
-  } catch (error) {
+
+  } catch(error){
 
 
     console.log(
@@ -247,48 +399,23 @@ function crearCita(req, res) {
 
 }
 
-// eséra
-
-// PUT /api/citas/:id
-
-function actualizarEstado(req, res) {
-
-  try {
-
-    const cita = appointmentService.updateAppointmentStatus(
-      req.params.id,
-      req.body.estado,
-    );
-
-    res.json({
-      ok: true,
-      data: cita,
-    });
-
-  } catch (error) {
-
-    res.status(400).json({
-      ok: false,
-      message: error.message,
-    });
-
-  }
-
-}
 
 
 
+module.exports={
 
+  listarCitas,
 
+  buscarCitas,
 
-module.exports = {
+  obtenerCita,
 
- listarCitas,
- buscarCitas,
- obtenerCita,
- actualizarEstado,
- calendario,
- ocupados,
- crearCita
+  actualizarEstado,
+
+  calendario,
+
+  ocupados,
+
+  crearCita
 
 };
