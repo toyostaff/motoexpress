@@ -32,6 +32,16 @@ function Login() {
     try {
       setCargando(true);
 
+        //temporalmente
+
+        console.log("ENVIANDO LOGIN", {
+  usuario,
+  password
+});
+
+
+
+
       const response = await axios.post("/auth/login", {
         usuario,
         password,
