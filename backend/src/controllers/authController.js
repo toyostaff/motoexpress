@@ -3,6 +3,9 @@
 const authService = require('../services/authService');
 
 async function login(req, res) {
+
+    console.log("LLEGÓ LOGIN:", req.body);
+
     const { usuario, password } = req.body;
 
   if (!usuario || !password) {
