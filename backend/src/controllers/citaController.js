@@ -125,9 +125,6 @@ async function obtenerCita(req,res){
 }
 
 
-
-
-
 // PUT /api/citas/:id/estado
 async function actualizarEstado(req,res){
 
@@ -187,12 +184,11 @@ async function calendario(req,res){
       await appointmentService.getAppointments();
 
 
-
-    const filtradas =
-      citas.filter(
-        cita=>cita.fecha === fecha
-      );
-
+const filtradas =
+  citas.filter(
+    cita =>
+      cita.fecha.toISOString().split("T")[0] === fecha
+  );
 
 
     res.json({
