@@ -39,7 +39,7 @@ function BookingSuccessModal({
           mb-5
           "
         >
-          .........🏍........
+          ....🏍....
         </div>
 
 
