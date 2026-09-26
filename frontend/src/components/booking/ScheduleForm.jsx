@@ -79,15 +79,14 @@ function ScheduleForm({
 function isPastHour(hour) {
   if (!formData.fecha) return false;
 
-  const today = new Date();
-  const selectedDate = new Date(formData.fecha);
+  const now = new Date();
 
-  const isToday =
-    today.toISOString().split("T")[0] === formData.fecha;
+  const today =
+    `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
 
-  if (!isToday) return false;
+  if (today !== formData.fecha) return false;
 
-  const currentHour = today.getHours();
+  const currentHour = now.getHours();
 
   const hourStart = parseInt(hour.split(":")[0]);
 
@@ -196,7 +195,7 @@ function isPastHour(hour) {
           {hours.map((hour) => {
 const isAvailable =
   available.includes(hour) && !isPastHour(hour);
-  
+
             const isSelected = formData.bloque_hora === hour;
 
             return (
