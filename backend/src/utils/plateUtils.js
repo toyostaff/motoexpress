@@ -1,37 +1,40 @@
 function normalizePlate(plate) {
+
   if (typeof plate !== "string") {
     return "";
   }
 
   return plate
-
     .trim()
-
     .toUpperCase()
-
     .replace(/[\s-]/g, "");
+
 }
+
 
 function isValidPlate(plate) {
+
   const normalizedPlate = normalizePlate(plate);
 
-  // Formato actual Perú:
-  // ABC1234
 
-  const formatoActual = /^[A-Z]{3}[0-9]{4}$/;
+  /*
+    Regla MotoExpress:
 
-  // Formato antiguo:
-  // AB1234
+    - Solo letras y números
+    - Sin guiones
+    - Sin espacios
+    - Máximo 7 caracteres
+  */
 
-  const formatoAntiguo = /^[A-Z]{2}[0-9]{4}$/;
+  const formatoUniversal = /^[A-Z0-9]{1,7}$/;
 
-  return (
-    formatoActual.test(normalizedPlate) || formatoAntiguo.test(normalizedPlate)
-  );
+
+  return formatoUniversal.test(normalizedPlate);
+
 }
+
 
 module.exports = {
   normalizePlate,
-
   isValidPlate,
 };
