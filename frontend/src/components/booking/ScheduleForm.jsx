@@ -76,6 +76,27 @@ function ScheduleForm({
     await loadAvailability(fecha);
   }
 
+function isPastHour(hour) {
+  if (!formData.fecha) return false;
+
+  const today = new Date();
+  const selectedDate = new Date(formData.fecha);
+
+  const isToday =
+    today.toISOString().split("T")[0] === formData.fecha;
+
+  if (!isToday) return false;
+
+  const currentHour = today.getHours();
+
+  const hourStart = parseInt(hour.split(":")[0]);
+
+  return hourStart <= currentHour;
+}
+
+
+
+
   function selectHour(hour) {
     setError("");
 
@@ -173,8 +194,9 @@ function ScheduleForm({
           "
         >
           {hours.map((hour) => {
-            const isAvailable = available.includes(hour);
-
+const isAvailable =
+  available.includes(hour) && !isPastHour(hour);
+  
             const isSelected = formData.bloque_hora === hour;
 
             return (

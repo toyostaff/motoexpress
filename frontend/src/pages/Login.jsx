@@ -39,9 +39,6 @@ function Login() {
   password
 });
 
-
-
-
       const response = await axios.post("/auth/login", {
         usuario,
         password,
