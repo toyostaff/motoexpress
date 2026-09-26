@@ -91,7 +91,7 @@ function Footer() {
 
 
           <p className="mt-3">
-            📞 123456789 - XAVIER
+            📞 977675988
           </p>
 
 
@@ -142,7 +142,7 @@ function Footer() {
             text-lg
             "
           >
-            Síguenos
+            MotoExpress
           </h4>
 
 
@@ -154,26 +154,10 @@ function Footer() {
             "
           >
 
-            <a
-              href="#"
-              className="
-              hover:text-orange-500
-              transition
-              "
-            >
-              Instagram
-            </a>
+            
 
 
-            <a
-              href="#"
-              className="
-              hover:text-orange-500
-              transition
-              "
-            >
-              TikTok
-            </a>
+           
 
 
           </div>
@@ -197,7 +181,7 @@ function Footer() {
         "
       >
 
-        Todos los derechos reservados - 2026
+        MOTOEXPRESS
 
       </div>
 
