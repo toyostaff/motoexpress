@@ -81,16 +81,31 @@ function isPastHour(hour) {
 
   const now = new Date();
 
-  const today =
-    `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+  const today = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate()
+  );
 
-  if (today !== formData.fecha) return false;
+  const selectedDate = new Date(
+    formData.fecha + "T00:00:00"
+  );
 
-  const currentHour = now.getHours();
+  // Si la fecha seleccionada ya pasó completamente
+  if (selectedDate < today) {
+    return true;
+  }
 
-  const hourStart = parseInt(hour.split(":")[0]);
+  // Si es hoy validar horas
+  if (selectedDate.getTime() === today.getTime()) {
+    const currentHour = now.getHours();
 
-  return hourStart <= currentHour;
+    const hourStart = parseInt(hour.split(":")[0]);
+
+    return hourStart <= currentHour;
+  }
+
+  return false;
 }
 
 
